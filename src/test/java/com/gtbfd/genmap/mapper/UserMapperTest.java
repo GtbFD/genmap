@@ -4,14 +4,27 @@ import com.gtbfd.genmap.domain.User;
 import com.gtbfd.genmap.dto.UserDTO;
 import com.gtbfd.genmap.vo.UserVO;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.time.LocalDate;
 
 @ExtendWith(MockitoExtension.class)
 public class UserMapperTest {
+
+    private UserMapper userMapper;
+
+    @BeforeEach
+    public void init(){
+        userMapper = new UserMapper();
+    }
 
     @Test
     public void whenToMapThenReturnUser(){
@@ -25,7 +38,7 @@ public class UserMapperTest {
                 .expiresIn(LocalDate.now().plusDays(30))
                 .build();
 
-        User userResponse = UserMapper.toMap(userDTO);
+        User userResponse = userMapper.toMap(userDTO);
 
         Assertions.assertEquals(user.getName(), userResponse.getName());
         Assertions.assertEquals(user.getLastname(), userResponse.getLastname());
@@ -45,7 +58,7 @@ public class UserMapperTest {
                 .expiresIn(LocalDate.now().plusDays(30))
                 .build();
 
-        UserDTO userDTO = UserMapper.toDTO(user);
+        UserDTO userDTO = userMapper.toDTO(user);
 
         Assertions.assertEquals(user.getName(), userDTO.name());
         Assertions.assertEquals(user.getLastname(), userDTO.lastname());
@@ -63,7 +76,7 @@ public class UserMapperTest {
                 .expiresIn(LocalDate.now().plusDays(30))
                 .build();
 
-        UserVO userVO = UserMapper.toVO(user);
+        UserVO userVO = userMapper.toVO(user);
 
         Assertions.assertEquals(user.getId(), userVO.id());
         Assertions.assertEquals(user.getName(), userVO.name());

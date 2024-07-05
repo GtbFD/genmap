@@ -10,7 +10,7 @@ import java.time.LocalDate;
 @Component
 public class UserMapper {
 
-    public static User toMap(UserDTO userDTO){
+    public User toMap(UserDTO userDTO){
         return User.builder()
                 .name(userDTO.name())
                 .lastname(userDTO.lastname())
@@ -20,11 +20,11 @@ public class UserMapper {
                 .build();
     }
 
-    public static UserDTO toDTO(User user){
+    public UserDTO toDTO(User user){
         return new UserDTO(user.getName(), user.getLastname(), user.getCpf(), user.getPassword());
     }
 
-    public static UserVO toVO(User user){
+    public UserVO toVO(User user){
         return new UserVO(user.getId(), user.getName(), user.getLastname(), user.getExpiresIn());
     }
 }
