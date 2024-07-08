@@ -86,6 +86,7 @@ public class UserController {
             LOGGER.info("[DEBUG]: Message = {} {}, Class = {}", "User patched", userPatched, className);
             return ResponseEntity.status(HttpStatus.OK).body(userPatched);
         }
+        LOGGER.info("[DEBUG]: Message = {}, Class = {}", "It wasn't possible to patch user password", className);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("");
     }
 }
