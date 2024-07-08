@@ -24,9 +24,11 @@ public class UserService {
     public UserVO create(UserDTO userDTO){
         User user = userMapper.toMap(userDTO);
 
-        User createdUser = userRepository.save(user);
-
-        return userMapper.toVO(createdUser);
+        if (Objects.nonNull(user)) {
+            User createdUser = userRepository.save(user);
+            return userMapper.toVO(createdUser);
+        }
+        return null;
     }
 
     public UserVO findById(Long id){
@@ -48,14 +50,17 @@ public class UserService {
     }
 
     public UserVO patchPassword(Long id, UserDTO userDTO){
-        User userFound = userRepository.findById(id).orElse(null);
-        User user = userMapper.toMap(userDTO);
-        if (Objects.nonNull(user.getPassword())){
-            userFound.setId(id);
-            userFound.setPassword(user.getPassword());
-            User userPatched = userRepository.save(userFound);
+        Optional<User> userFound = userRepository.findById(id);
 
-            return userMapper.toVO(userPatched);
+        if (userFound.isPresent()) {
+            User user = userMapper.toMap(userDTO);
+            if (Objects.nonNull(user.getPassword())) {
+                userFound.get().setId(id);
+                userFound.get().setPassword(user.getPassword());
+                User userPatched = userRepository.save(userFound.get());
+
+                return userMapper.toVO(userPatched);
+            }
         }
         return null;
     }
