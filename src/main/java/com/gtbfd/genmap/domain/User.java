@@ -1,12 +1,10 @@
 package com.gtbfd.genmap.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Builder;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity(name = "tb_user")
 @Builder
@@ -21,16 +19,23 @@ public class User {
     private String password;
     private LocalDate expiresIn;
 
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "users_units",
+            joinColumns = {@JoinColumn(name = "user_id")},
+            inverseJoinColumns = {@JoinColumn(name = "unit_id")})
+    private List<Unit> units;
+
     public User() {
     }
 
-    public User(Long id, String name, String lastname, String cpf, String password, LocalDate expiresIn) {
+    public User(Long id, String name, String lastname, String cpf, String password, LocalDate expiresIn, List<Unit> units) {
         this.id = id;
         this.name = name;
         this.lastname = lastname;
         this.cpf = cpf;
         this.password = password;
         this.expiresIn = expiresIn;
+        this.units = units;
     }
 
     public Long getId() {
@@ -81,6 +86,14 @@ public class User {
         this.expiresIn = expiresIn;
     }
 
+    public List<Unit> getUnits() {
+        return units;
+    }
+
+    public void setUnits(List<Unit> units) {
+        this.units = units;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -90,6 +103,7 @@ public class User {
                 ", cpf='" + cpf + '\'' +
                 ", password='" + password + '\'' +
                 ", expiresIn=" + expiresIn +
+                ", units=" + units +
                 '}';
     }
 }
