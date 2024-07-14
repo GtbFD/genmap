@@ -1,4 +1,4 @@
 package com.gtbfd.genmap.dto;
 
-public class UnitDTO {
+public record UnitDTO (String cnpj) {
 }

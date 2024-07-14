@@ -1,11 +1,13 @@
 package com.gtbfd.genmap.domain;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 
 import java.util.List;
 
 @Entity
 @Table(name = "tb_unit")
+@Builder
 public class Unit {
 
     @Id
@@ -59,7 +61,13 @@ public class Unit {
     }
 
     public void setCnpj(String cnpj) {
-        this.cnpj = cnpj;
+        this.cnpj = deformatCNPJ(cnpj);
+    }
+
+    private String deformatCNPJ(String cnpj){
+        return cnpj.replaceAll("[^0-9]", "").replaceAll("\\.", "")
+                .replaceAll("/", "")
+                .replaceAll("-", "");
     }
 
     public String getLogradouro() {
