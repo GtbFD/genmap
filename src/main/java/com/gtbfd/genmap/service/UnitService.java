@@ -6,6 +6,8 @@ import com.gtbfd.genmap.mapper.UnitMapper;
 import com.gtbfd.genmap.repository.UnitRepository;
 import com.gtbfd.genmap.util.CnpjFormatter;
 import com.gtbfd.genmap.vo.UnitVO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -25,15 +27,23 @@ public class UnitService {
     @Autowired
     private UnitMapper unitMapper;
 
+    private Logger LOGGER = LoggerFactory.getLogger(UnitService.class);
+
+    private final String className = UnitService.class.getName();
+
     public UnitVO create(UnitDTO unitDTO){
         if (Objects.nonNull(unitDTO)){
+            LOGGER.info("[DEBUG]: Message = {}, Class = {}", "Request to create unit", className);
             Unit unitFound = searchCompanyByCnpjOnInternet(unitDTO.cnpj());
             if (Objects.nonNull(unitFound)) {
+                LOGGER.info("[DEBUG]: Message = {} {}, Class = {}", "Unit found successfuly", unitFound, className);
                 Unit unitCreated = unitRepository.save(unitFound);
                 UnitVO unitVO = unitMapper.toVO(unitCreated);
+                LOGGER.info("[DEBUG]: Message = {} {}, Class = {}", "Unit created successfuly", unitVO, className);
                 return unitVO;
             }
         }
+        LOGGER.info("[DEBUG]: Message = {}, Class = {}", "It wasn't possible to create a new unit", className);
         return null;
     }
 

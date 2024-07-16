@@ -1,8 +1,10 @@
 package com.gtbfd.genmap.service;
 
+import com.gtbfd.genmap.domain.Unit;
 import com.gtbfd.genmap.domain.User;
 import com.gtbfd.genmap.dto.UserDTO;
 import com.gtbfd.genmap.mapper.UserMapper;
+import com.gtbfd.genmap.repository.UnitRepository;
 import com.gtbfd.genmap.repository.UserRepository;
 import com.gtbfd.genmap.vo.UserVO;
 import org.checkerframework.checker.units.qual.A;
@@ -15,8 +17,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
@@ -27,25 +33,45 @@ public class UserServiceTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private UnitRepository unitRepository;
     @InjectMocks
     private UserService userService;
 
+    private Unit unit;
 
     private User user;
+    private UserMapper userMapperTest;
 
     @BeforeEach
-    public void setUp(){
+    public void setUp() {
+
+        userMapperTest = new UserMapper();
+
+        unit = Unit.builder()
+                .id(1L)
+                .nome("SHF Comércio e Serviços")
+                .cnpj("00.000.000/0000-00")
+                .logradouro("Rua 13 de Maio")
+                .bairro("Centro")
+                .municipio("Cajazeiras")
+                .uf("PB")
+                .build();
+
         user = User.builder()
+                .id(1L)
                 .name("Antônio")
                 .lastname("Gomes Silva")
                 .password("a9r8v2s9a!%#")
                 .cpf("708.495,711-05")
+                .units(new ArrayList<>())
                 .expiresIn(LocalDate.now().plusDays(30))
                 .build();
     }
 
     @Test
-    public void whenCreateThenReturnNewUserCreated(){
+    public void whenCreateThenReturnNewUserCreated() {
 
         UserVO representation = new UserVO(1L, user.getName(), user.getLastname(), user.getExpiresIn());
 
@@ -62,7 +88,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void whenUserNullThenCantCreateUser(){
+    public void whenUserNullThenCantCreateUser() {
 
         UserDTO userDTO = null;
         Mockito.when(userMapper.toMap(userDTO)).thenReturn(null);
@@ -73,7 +99,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void whenFindByIdThenReturnUser(){
+    public void whenFindByIdThenReturnUser() {
         Long id = 1L;
         UserVO representation = new UserVO(1L, user.getName(), user.getLastname(), user.getExpiresIn());
 
@@ -88,7 +114,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void whenFindByIdWhenIncorrectIdThenReturn(){
+    public void whenFindByIdWhenIncorrectIdThenReturn() {
         Long id = 809818L;
         UserVO representation = null;
 
@@ -101,7 +127,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void whenFindByCpfThenReturnUser(){
+    public void whenFindByCpfThenReturnUser() {
         String cpf = user.getCpf();
         UserVO representation = new UserVO(1L, user.getName(), user.getLastname(), user.getExpiresIn());
 
@@ -116,7 +142,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void whenFindByCpfWithInexistentCpfThenReturnNull(){
+    public void whenFindByCpfWithInexistentCpfThenReturnNull() {
         String cpf = "10365741028";
 
         Mockito.when(userRepository.findByCpf(cpf)).thenReturn(Optional.empty());
@@ -128,7 +154,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void whenPatchPasswordThenUpdate(){
+    public void whenPatchPasswordThenUpdate() {
         user.setId(1L);
         UserDTO userDTO = new UserDTO(user.getName(), user.getLastname(), user.getCpf(), user.getPassword());
         String newPassword = "NewPassword";
@@ -149,7 +175,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void whenPatchPasswordWithInvalidIdThenReturnNull(){
+    public void whenPatchPasswordWithInvalidIdThenReturnNull() {
         Long id = 1500L;
         UserDTO userDTO = new UserDTO(user.getName(), user.getLastname(), user.getCpf(), user.getPassword());
 
@@ -163,7 +189,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void whenAuthenticateUserThenReturnTrue(){
+    public void whenAuthenticateUserThenReturnTrue() {
 
         UserVO representation = new UserVO(1L, user.getName(), user.getLastname(), user.getExpiresIn());
 
@@ -176,11 +202,28 @@ public class UserServiceTest {
     }
 
     @Test
-    public void whenUnauthenticatedUserThenReturnNull(){
+    public void whenUnauthenticatedUserThenReturnNull() {
         Mockito.when(userRepository.findByCpfAndPassword("80536512079", "user1473@#")).thenReturn(Optional.empty());
 
         UserVO userAuthenticated = userService.authenticate("80536512079", "user1473@#");
 
         Assertions.assertNull(userAuthenticated);
+    }
+
+    @Test
+    public void whenAddUnitThenSuccess() {
+        String cpf = "00000000000";
+        String cnpj = "00.000.000/0000-00";
+
+        UserVO userVO = userMapperTest.toVO(user);
+
+        Mockito.when(userRepository.findByCpf(cpf)).thenReturn(Optional.of(user));
+        Mockito.when(unitRepository.findByCnpj(cnpj)).thenReturn(Optional.of(unit));
+        Mockito.when(userRepository.save(user)).thenReturn(user);
+        Mockito.when(userMapper.toVO(user)).thenReturn(userVO);
+
+        UserVO response = userService.addUnit(cpf, cnpj);
+
+        System.out.println(response);
     }
 }

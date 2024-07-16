@@ -20,10 +20,12 @@ public class Unit {
     private String municipio;
     private String uf;
 
-    @ManyToMany
-    @JoinTable(name = "users_units",
-            joinColumns = {@JoinColumn(name = "unit_id")},
-            inverseJoinColumns = {@JoinColumn(name = "user_id")})
+    @ManyToMany(fetch = FetchType.LAZY,
+            cascade = {
+                    CascadeType.PERSIST,
+                    CascadeType.MERGE,
+            },
+            mappedBy = "units")
     private List<User> users;
 
     public Unit() {
@@ -64,7 +66,7 @@ public class Unit {
         this.cnpj = deformatCNPJ(cnpj);
     }
 
-    private String deformatCNPJ(String cnpj){
+    private String deformatCNPJ(String cnpj) {
         return cnpj.replaceAll("[^0-9]", "").replaceAll("\\.", "")
                 .replaceAll("/", "")
                 .replaceAll("-", "");

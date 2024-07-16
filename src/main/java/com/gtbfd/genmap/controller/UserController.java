@@ -89,4 +89,11 @@ public class UserController {
         LOGGER.info("[DEBUG]: Message = {}, Class = {}", "It wasn't possible to patch user password", className);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("");
     }
+
+    @PostMapping("{cpf}/unit/{cnpj}")
+    public ResponseEntity<?> addUnit(@PathVariable String cpf, @PathVariable String cnpj){
+        UserVO userUpdated = userService.addUnit(cpf, cnpj);
+        return ResponseEntity.status(HttpStatus.OK).body(userUpdated);
+
+    }
 }

@@ -19,8 +19,13 @@ public class User {
     private String password;
     private LocalDate expiresIn;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "users_units",
+    @ManyToMany(
+            fetch = FetchType.LAZY,
+            cascade = {
+                    CascadeType.PERSIST,
+                    CascadeType.MERGE
+            })
+    @JoinTable(name = "user_units",
             joinColumns = {@JoinColumn(name = "user_id")},
             inverseJoinColumns = {@JoinColumn(name = "unit_id")})
     private List<Unit> units;
@@ -103,7 +108,6 @@ public class User {
                 ", cpf='" + cpf + '\'' +
                 ", password='" + password + '\'' +
                 ", expiresIn=" + expiresIn +
-                ", units=" + units +
                 '}';
     }
 }

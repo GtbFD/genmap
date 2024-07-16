@@ -1,8 +1,10 @@
 package com.gtbfd.genmap.service;
 
+import com.gtbfd.genmap.domain.Unit;
 import com.gtbfd.genmap.domain.User;
 import com.gtbfd.genmap.dto.UserDTO;
 import com.gtbfd.genmap.mapper.UserMapper;
+import com.gtbfd.genmap.repository.UnitRepository;
 import com.gtbfd.genmap.repository.UserRepository;
 import com.gtbfd.genmap.vo.UserVO;
 import org.slf4j.Logger;
@@ -11,14 +13,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private UnitRepository unitRepository;
 
     @Autowired
     private UserMapper userMapper;
@@ -62,6 +66,29 @@ public class UserService {
             return userVO;
         }
         LOGGER.info("[DEBUG]: Message = {}, Class = {}", "It wasn't possible to find a user with this CPF", className);
+        return null;
+    }
+
+    public UserVO addUnit(String cpf, String cnpj){
+        LOGGER.info("[DEBUG]: Message = {}, Class = {}", "Request to add unit for user", className);
+        Optional<User> userFound = userRepository.findByCpf(cpf);
+        if (userFound.isPresent()){
+            User userFoundEntity = userFound.get();
+            LOGGER.info("[DEBUG]: Message = {} {}, Class = {}", "User found by CPF", userFoundEntity, className);
+
+            Optional<Unit> unitFound = unitRepository.findByCnpj(cnpj);
+            if (unitFound.isPresent()) {
+                Unit unitFoundEntity = unitFound.get();
+                LOGGER.info("[DEBUG]: Message = {} {}, Class = {}", "Unit found by CNPJ", unitFoundEntity, className);
+
+                userFoundEntity.getUnits().add(unitFoundEntity);
+                User userUpdated = userRepository.save(userFoundEntity);
+
+                UserVO userVO = userMapper.toVO(userUpdated);
+                LOGGER.info("[DEBUG]: Message = {}, Class = {}", "Unit added", className);
+                return userVO;
+            }
+        }
         return null;
     }
 
