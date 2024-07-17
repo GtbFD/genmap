@@ -1,12 +1,12 @@
 package com.gtbfd.genmap.service;
 
 import com.gtbfd.genmap.domain.Unit;
-import com.gtbfd.genmap.domain.User;
-import com.gtbfd.genmap.dto.UnitDTO;
+import com.gtbfd.genmap.dto.CompanyDTO;
 import com.gtbfd.genmap.mapper.UnitMapper;
 import com.gtbfd.genmap.repository.UnitRepository;
 import com.gtbfd.genmap.util.CnpjFormatter;
-import com.gtbfd.genmap.vo.UnitVO;
+import com.gtbfd.genmap.util.CompanySearch;
+import com.gtbfd.genmap.vo.CompanyVO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,7 +16,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Optional;
 
@@ -28,6 +27,9 @@ public class UnitServiceTest {
 
     @Mock
     private CnpjFormatter cnpjFormatter;
+
+    @Mock
+    private CompanySearch companySearch;
 
     @Mock
     private UnitMapper unitMapper;
@@ -56,16 +58,15 @@ public class UnitServiceTest {
 
     @Test
     public void whenCreateThenReturnNewUnit(){
-        String cnpj = "08.778.268/0020-23";
-        UnitDTO unitDTO = unitMapperTest.toDTO(unit);
+        CompanyDTO companyDTO = unitMapperTest.toDTO(unit);
 
-        UnitVO unitVO = new UnitVO(unit.getId(), unit.getNome(), unit.getCnpj(), unit.getLogradouro(), unit.getBairro(), unit.getMunicipio(), unit.getUf());
+        CompanyVO companyVO = new CompanyVO(unit.getId(), unit.getNome(), unit.getCnpj(), unit.getLogradouro(), unit.getBairro(), unit.getMunicipio(), unit.getUf());
 
-        Mockito.when(cnpjFormatter.deformatCNPJ(cnpj)).thenReturn("08778268002023");
+        Mockito.when(companySearch.searchCompanyByCnpjOnInternet(companyDTO.cnpj())).thenReturn(unit);
         Mockito.when(unitRepository.save(ArgumentMatchers.any(Unit.class))).thenReturn(unit);
-        Mockito.when(unitMapper.toVO(unit)).thenReturn(unitVO);
+        Mockito.when(unitMapper.toVO(unit)).thenReturn(companyVO);
 
-        UnitVO unitCreated = unitService.create(unitDTO);
+        CompanyVO unitCreated = unitService.create(companyDTO);
 
         System.out.println(unitCreated);
     }
@@ -81,12 +82,11 @@ public class UnitServiceTest {
                 .municipio("Test")
                 .uf("Test")
                 .build();
-        UnitDTO unitDTO = unitMapperTest.toDTO(unitTest);
+        CompanyDTO companyDTO = unitMapperTest.toDTO(unitTest);
 
-        Mockito.when(cnpjFormatter.deformatCNPJ(cnpj)).thenReturn("00000000000000");
-        Mockito.when(unitService.searchCompanyByCnpjOnInternet(cnpj)).thenReturn(null);
+        Mockito.when(companySearch.searchCompanyByCnpjOnInternet(cnpj)).thenReturn(null);
 
-        UnitVO response = unitService.create(unitDTO);
+        CompanyVO response = unitService.create(companyDTO);
 
         Assertions.assertNull(response);
         Mockito.verify(unitRepository, Mockito.times(0)).save(unit);
@@ -102,17 +102,17 @@ public class UnitServiceTest {
                 .municipio("Test")
                 .uf("Test")
                 .build();
-        UnitVO unitVO = new UnitVO(unitTest.getId(), unitTest.getNome(), unitTest.getCnpj(), unitTest.getLogradouro(), unitTest.getBairro(), unitTest.getMunicipio(), unitTest.getUf());
-        UnitDTO unitDTO = unitMapperTest.toDTO(unit);
+        CompanyVO companyVO = new CompanyVO(unitTest.getId(), unitTest.getNome(), unitTest.getCnpj(), unitTest.getLogradouro(), unitTest.getBairro(), unitTest.getMunicipio(), unitTest.getUf());
+        CompanyDTO companyDTO = unitMapperTest.toDTO(unit);
 
 
-        Mockito.when(unitRepository.findByCnpj(unitDTO.cnpj())).thenReturn(Optional.of(unitTest));
-        Mockito.when(unitMapper.toVO(unitTest)).thenReturn(unitVO);
+        Mockito.when(unitRepository.findByCnpj(companyDTO.cnpj())).thenReturn(Optional.of(unitTest));
+        Mockito.when(unitMapper.toVO(unitTest)).thenReturn(companyVO);
 
-        UnitVO unitFound = unitService.findByCnpj(unitDTO);
+        CompanyVO unitFound = unitService.findByCnpj(companyDTO);
 
         Assertions.assertNotNull(unitFound);
-        Mockito.verify(unitRepository, Mockito.times(1)).findByCnpj(unitDTO.cnpj());
+        Mockito.verify(unitRepository, Mockito.times(1)).findByCnpj(companyDTO.cnpj());
         Assertions.assertEquals(unitTest.getCnpj(), unitFound.cpnj());
     }
 
@@ -126,12 +126,12 @@ public class UnitServiceTest {
                 .municipio("Test")
                 .uf("Test")
                 .build();
-        UnitVO unitVO = new UnitVO(unitTest.getId(), unitTest.getNome(), unitTest.getCnpj(), unitTest.getLogradouro(), unitTest.getBairro(), unitTest.getMunicipio(), unitTest.getUf());
-        UnitDTO unitDTO = unitMapperTest.toDTO(unit);
+        CompanyVO companyVO = new CompanyVO(unitTest.getId(), unitTest.getNome(), unitTest.getCnpj(), unitTest.getLogradouro(), unitTest.getBairro(), unitTest.getMunicipio(), unitTest.getUf());
+        CompanyDTO companyDTO = unitMapperTest.toDTO(unit);
 
-        Mockito.when(unitRepository.findByCnpj(unitDTO.cnpj())).thenReturn(Optional.empty());
+        Mockito.when(unitRepository.findByCnpj(companyDTO.cnpj())).thenReturn(Optional.empty());
 
-        UnitVO unitFound = unitService.findByCnpj(unitDTO);
+        CompanyVO unitFound = unitService.findByCnpj(companyDTO);
 
         Assertions.assertNull(unitFound);
         Mockito.verify(unitMapper, Mockito.times(0)).toVO(unitTest);
@@ -148,13 +148,13 @@ public class UnitServiceTest {
                 .municipio("Test")
                 .uf("Test")
                 .build();
-        UnitVO unitVO = new UnitVO(unitTest.getId(), unitTest.getNome(), unitTest.getCnpj(), unitTest.getLogradouro(), unitTest.getBairro(), unitTest.getMunicipio(), unitTest.getUf());
+        CompanyVO companyVO = new CompanyVO(unitTest.getId(), unitTest.getNome(), unitTest.getCnpj(), unitTest.getLogradouro(), unitTest.getBairro(), unitTest.getMunicipio(), unitTest.getUf());
 
 
         Mockito.when(unitRepository.findById(id)).thenReturn(Optional.of(unitTest));
-        Mockito.when(unitMapper.toVO(unitTest)).thenReturn(unitVO);
+        Mockito.when(unitMapper.toVO(unitTest)).thenReturn(companyVO);
 
-        UnitVO unitFound = unitService.findById(id);
+        CompanyVO unitFound = unitService.findById(id);
 
         Assertions.assertNotNull(unitFound);
         Mockito.verify(unitRepository, Mockito.times(1)).findById(id);
@@ -175,7 +175,7 @@ public class UnitServiceTest {
 
         Mockito.when(unitRepository.findById(id)).thenReturn(Optional.empty());
 
-        UnitVO unitFound = unitService.findById(id);
+        CompanyVO unitFound = unitService.findById(id);
 
         Assertions.assertNull(unitFound);
         Mockito.verify(unitMapper, Mockito.times(0)).toVO(unitTest);

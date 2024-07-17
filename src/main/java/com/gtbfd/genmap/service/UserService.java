@@ -6,6 +6,7 @@ import com.gtbfd.genmap.dto.UserDTO;
 import com.gtbfd.genmap.mapper.UserMapper;
 import com.gtbfd.genmap.repository.UnitRepository;
 import com.gtbfd.genmap.repository.UserRepository;
+import com.gtbfd.genmap.util.CnpjFormatter;
 import com.gtbfd.genmap.vo.UserVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +24,9 @@ public class UserService {
 
     @Autowired
     private UnitRepository unitRepository;
+
+    @Autowired
+    private CnpjFormatter cnpjFormatter;
 
     @Autowired
     private UserMapper userMapper;
@@ -76,7 +80,7 @@ public class UserService {
             User userFoundEntity = userFound.get();
             LOGGER.info("[DEBUG]: Message = {} {}, Class = {}", "User found by CPF", userFoundEntity, className);
 
-            Optional<Unit> unitFound = unitRepository.findByCnpj(cnpj);
+            Optional<Unit> unitFound = unitRepository.findByCnpj(cnpjFormatter.deformatCNPJ(cnpj));
             if (unitFound.isPresent()) {
                 Unit unitFoundEntity = unitFound.get();
                 LOGGER.info("[DEBUG]: Message = {} {}, Class = {}", "Unit found by CNPJ", unitFoundEntity, className);

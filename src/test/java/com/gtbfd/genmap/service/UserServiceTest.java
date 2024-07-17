@@ -6,6 +6,7 @@ import com.gtbfd.genmap.dto.UserDTO;
 import com.gtbfd.genmap.mapper.UserMapper;
 import com.gtbfd.genmap.repository.UnitRepository;
 import com.gtbfd.genmap.repository.UserRepository;
+import com.gtbfd.genmap.util.CnpjFormatter;
 import com.gtbfd.genmap.vo.UserVO;
 import org.checkerframework.checker.units.qual.A;
 import org.junit.jupiter.api.Assertions;
@@ -36,6 +37,9 @@ public class UserServiceTest {
 
     @Mock
     private UnitRepository unitRepository;
+
+    @Mock
+    private CnpjFormatter cnpjFormatter;
     @InjectMocks
     private UserService userService;
 
@@ -218,7 +222,8 @@ public class UserServiceTest {
         UserVO userVO = userMapperTest.toVO(user);
 
         Mockito.when(userRepository.findByCpf(cpf)).thenReturn(Optional.of(user));
-        Mockito.when(unitRepository.findByCnpj(cnpj)).thenReturn(Optional.of(unit));
+        Mockito.when(cnpjFormatter.deformatCNPJ(cnpj)).thenReturn("00000000000000");
+        Mockito.when(unitRepository.findByCnpj("00000000000000")).thenReturn(Optional.of(unit));
         Mockito.when(userRepository.save(user)).thenReturn(user);
         Mockito.when(userMapper.toVO(user)).thenReturn(userVO);
 

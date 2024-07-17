@@ -1,8 +1,8 @@
 package com.gtbfd.genmap.controller;
 
-import com.gtbfd.genmap.dto.UnitDTO;
+import com.gtbfd.genmap.dto.CompanyDTO;
 import com.gtbfd.genmap.service.UnitService;
-import com.gtbfd.genmap.vo.UnitVO;
+import com.gtbfd.genmap.vo.CompanyVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +24,9 @@ public class UnitController {
     private static final String className = UnitController.class.getName();
 
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody UnitDTO unitDTO){
+    public ResponseEntity<?> create(@RequestBody CompanyDTO companyDTO){
         LOGGER.info("[DEBUG]: Message = {}, Class = {}", "Request to create a new unit", className);
-        UnitVO unitCreated = unitService.create(unitDTO);
+        CompanyVO unitCreated = unitService.create(companyDTO);
 
         if (Objects.nonNull(unitCreated)){
             LOGGER.info("[DEBUG]: Message = {}, Class = {}", "Unit created successfuly", className);
