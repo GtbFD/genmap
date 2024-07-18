@@ -109,7 +109,7 @@ public class UnitServiceTest {
         Mockito.when(unitRepository.findByCnpj(companyDTO.cnpj())).thenReturn(Optional.of(unitTest));
         Mockito.when(unitMapper.toVO(unitTest)).thenReturn(companyVO);
 
-        CompanyVO unitFound = unitService.findByCnpj(companyDTO);
+        CompanyVO unitFound = unitService.findByCnpj(companyDTO.cnpj());
 
         Assertions.assertNotNull(unitFound);
         Mockito.verify(unitRepository, Mockito.times(1)).findByCnpj(companyDTO.cnpj());
@@ -131,7 +131,7 @@ public class UnitServiceTest {
 
         Mockito.when(unitRepository.findByCnpj(companyDTO.cnpj())).thenReturn(Optional.empty());
 
-        CompanyVO unitFound = unitService.findByCnpj(companyDTO);
+        CompanyVO unitFound = unitService.findByCnpj(companyDTO.cnpj());
 
         Assertions.assertNull(unitFound);
         Mockito.verify(unitMapper, Mockito.times(0)).toVO(unitTest);

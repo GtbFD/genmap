@@ -47,9 +47,9 @@ public class UnitService {
         return null;
     }
 
-    public CompanyVO findByCnpj(CompanyDTO companyDTO){
-        if (Objects.nonNull(companyDTO)){
-            Optional<Unit> unit = unitRepository.findByCnpj(companyDTO.cnpj());
+    public CompanyVO findByCnpj(String cnpj){
+        if (Objects.nonNull(cnpj)){
+            Optional<Unit> unit = unitRepository.findByCnpj(cnpj);
             if (unit.isPresent() && !unit.get().isDeleted()){
                 return unitMapper.toVO(unit.orElseThrow());
             }
