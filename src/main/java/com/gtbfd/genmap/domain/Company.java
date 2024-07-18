@@ -1,10 +1,7 @@
 package com.gtbfd.genmap.domain;
 
 import com.gtbfd.genmap.util.CnpjFormatter;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.experimental.SuperBuilder;
 
@@ -16,16 +13,20 @@ public class Company {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nome;
+    @Column(unique = true)
     private String cnpj;
     private String logradouro;
     private String bairro;
     private String municipio;
     private String uf;
 
+    @Column(columnDefinition = "boolean default false")
+    private boolean isDeleted;
+
     public Company() {
     }
 
-    public Company(Long id, String nome, String cnpj, String logradouro, String bairro, String municipio, String uf) {
+    public Company(Long id, String nome, String cnpj, String logradouro, String bairro, String municipio, String uf, boolean isDeleted) {
         this.id = id;
         this.nome = nome;
         this.cnpj = cnpj;
@@ -33,6 +34,7 @@ public class Company {
         this.bairro = bairro;
         this.municipio = municipio;
         this.uf = uf;
+        this.isDeleted = isDeleted;
     }
 
     public Long getId() {
@@ -89,6 +91,14 @@ public class Company {
 
     public void setUf(String uf) {
         this.uf = uf;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
     }
 
     @Override

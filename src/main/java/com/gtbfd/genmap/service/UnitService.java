@@ -1,5 +1,6 @@
 package com.gtbfd.genmap.service;
 
+import com.gtbfd.genmap.domain.Supplier;
 import com.gtbfd.genmap.domain.Unit;
 import com.gtbfd.genmap.dto.CompanyDTO;
 import com.gtbfd.genmap.mapper.UnitMapper;
@@ -49,7 +50,7 @@ public class UnitService {
     public CompanyVO findByCnpj(CompanyDTO companyDTO){
         if (Objects.nonNull(companyDTO)){
             Optional<Unit> unit = unitRepository.findByCnpj(companyDTO.cnpj());
-            if (unit.isPresent()){
+            if (unit.isPresent() && !unit.get().isDeleted()){
                 return unitMapper.toVO(unit.orElseThrow());
             }
         }
@@ -59,7 +60,7 @@ public class UnitService {
     public CompanyVO findById(Long id){
         if (Objects.nonNull(id)){
             Optional<Unit> unit = unitRepository.findById(id);
-            if (unit.isPresent()){
+            if (unit.isPresent() && !unit.get().isDeleted()){
                 return unitMapper.toVO(unit.orElseThrow());
             }
         }
@@ -69,8 +70,22 @@ public class UnitService {
     public boolean delete(Long id){
         if (Objects.nonNull(id)){
             Optional<Unit> unitFound = unitRepository.findById(id);
-            if (unitFound.isPresent()){
+            if (unitFound.isPresent() && !unitFound.get().isDeleted()){
                 unitRepository.delete(unitFound.get());
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean deleteByCnpj(String cnpj){
+        Optional<Unit> companyFound = unitRepository.findByCnpj(cnpj);
+
+        if (companyFound.isPresent()){
+            Unit unit = companyFound.orElseThrow();
+            if (!unit.isDeleted()) {
+                unit.setDeleted(true);
+                unitRepository.save(unit);
                 return true;
             }
         }

@@ -20,8 +20,8 @@ public class Unit extends Company{
 
     public Unit(){}
 
-    public Unit(Long id, String nome, String cnpj, String logradouro, String bairro, String municipio, String uf, List<User> users) {
-        super(id, nome, cnpj, logradouro, bairro, municipio, uf);
+    public Unit(Long id, String nome, String cnpj, String logradouro, String bairro, String municipio, String uf, boolean isDeleted, List<User> users) {
+        super(id, nome, cnpj, logradouro, bairro, municipio, uf, isDeleted);
         this.users = users;
     }
 

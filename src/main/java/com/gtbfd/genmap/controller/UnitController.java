@@ -35,4 +35,17 @@ public class UnitController {
         LOGGER.info("[DEBUG]: Message = {}, Class = {}", "It wasn't possible to create a  new user", className);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("");
     }
+
+    @PatchMapping("/{cnpj}")
+    public ResponseEntity<?> deleteByCnpj(@PathVariable String cnpj){
+        LOGGER.info("[DEBUG]: Message = {}, Class = {}", "Request to delete a unit", className);
+        boolean isDeleted = unitService.deleteByCnpj(cnpj);
+
+        if (isDeleted) {
+            LOGGER.info("[DEBUG]: Message = {}, Class = {}", "Unit deleted successfuly", className);
+            return ResponseEntity.status(HttpStatus.OK).body(isDeleted);
+        }
+        LOGGER.info("[DEBUG]: Message = {}, Class = {}", "It wasn't possible to delete a user", className);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    }
 }

@@ -1,5 +1,6 @@
 package com.gtbfd.genmap.mapper;
 
+import com.gtbfd.genmap.domain.Company;
 import com.gtbfd.genmap.domain.Supplier;
 import com.gtbfd.genmap.domain.Unit;
 import com.gtbfd.genmap.dto.CompanyDTO;
@@ -9,6 +10,16 @@ import org.springframework.stereotype.Component;
 @Component
 public class SupplierMapper {
 
+    public Supplier companyToSupplier(Company company){
+        return Supplier.builder()
+                .nome(company.getNome())
+                .cnpj(company.getCnpj())
+                .logradouro(company.getLogradouro())
+                .bairro(company.getBairro())
+                .municipio(company.getMunicipio())
+                .uf(company.getUf())
+                .build();
+    }
     public Supplier toMap(CompanyDTO companyDTO){
         return Supplier.builder().build();
     }

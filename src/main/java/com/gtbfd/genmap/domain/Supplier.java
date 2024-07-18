@@ -10,7 +10,7 @@ public class Supplier extends Company {
     public Supplier() {
     }
 
-    public Supplier(Long id, String nome, String cnpj, String logradouro, String bairro, String municipio, String uf) {
-        super(id, nome, cnpj, logradouro, bairro, municipio, uf);
+    public Supplier(Long id, String nome, String cnpj, String logradouro, String bairro, String municipio, String uf, boolean isDeleted) {
+        super(id, nome, cnpj, logradouro, bairro, municipio, uf, isDeleted);
     }
 }
