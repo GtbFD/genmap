@@ -1,5 +1,6 @@
 package com.gtbfd.genmap.service;
 
+import com.gtbfd.genmap.domain.Company;
 import com.gtbfd.genmap.domain.Supplier;
 import com.gtbfd.genmap.dto.CompanyDTO;
 import com.gtbfd.genmap.mapper.SupplierMapper;
@@ -33,7 +34,8 @@ public class SupplierService {
     public CompanyVO create(CompanyDTO companyDTO) {
         if (Objects.nonNull(companyDTO)) {
             LOGGER.info("[DEBUG]: Message = {}, Class = {}", "Request to create a supplier", className);
-            Supplier companyFound = supplierMapper.companyToSupplier(companySearch.searchCompanyByCnpjOnInternet(companyDTO.cnpj()));
+            Company company = companySearch.searchCompanyByCnpjOnInternet(companyDTO.cnpj());
+            Supplier companyFound = supplierMapper.companyToSupplier(company);
             if (Objects.nonNull(companyFound)) {
                 LOGGER.info("[DEBUG]: Message = {} {}, Class = {}", "Company found successfuly", companyFound, className);
                 Supplier supplierCreated = supplierRepository.save(companyFound);
