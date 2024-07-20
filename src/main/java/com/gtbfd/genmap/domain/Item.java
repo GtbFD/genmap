@@ -1,10 +1,9 @@
 package com.gtbfd.genmap.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Builder;
+
+import java.util.List;
 
 @Entity
 @Builder
@@ -20,10 +19,13 @@ public class Item {
     private int code;
     private String unit;
 
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
+    private List<MapItem> maps;
+
     public Item() {
     }
 
-    public Item(Long id, String description, float painelPreco, float precoReferencia, float precoBps, int code, String unit) {
+    public Item(Long id, String description, float painelPreco, float precoReferencia, float precoBps, int code, String unit, List<MapItem> maps) {
         this.id = id;
         this.description = description;
         this.painelPreco = painelPreco;
@@ -31,6 +33,7 @@ public class Item {
         this.precoBps = precoBps;
         this.code = code;
         this.unit = unit;
+        this.maps = maps;
     }
 
     public Long getId() {
@@ -87,6 +90,14 @@ public class Item {
 
     public void setUnit(String unit) {
         this.unit = unit;
+    }
+
+    public List<MapItem> getMaps() {
+        return maps;
+    }
+
+    public void setMaps(List<MapItem> maps) {
+        this.maps = maps;
     }
 
     @Override

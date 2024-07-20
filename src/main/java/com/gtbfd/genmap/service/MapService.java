@@ -32,7 +32,8 @@ public class MapService {
                 map.getProcessNumber(),
                 map.getPbDocProcess(),
                 map.getSector(),
-                map.getTopic()
+                map.getTopic(),
+                map.getItens()
         );
     }
 }

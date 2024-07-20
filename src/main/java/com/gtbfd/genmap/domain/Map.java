@@ -1,10 +1,9 @@
 package com.gtbfd.genmap.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Builder;
+
+import java.util.List;
 
 @Entity
 @Builder
@@ -18,15 +17,19 @@ public class Map {
     private String sector;
     private String topic;
 
+    @OneToMany(mappedBy = "map", cascade = CascadeType.ALL)
+    private List<MapItem> itens;
+
     public Map() {
     }
 
-    public Map(Long id, String processNumber, String pbDocProcess, String sector, String topic) {
+    public Map(Long id, String processNumber, String pbDocProcess, String sector, String topic, List<MapItem> itens) {
         this.id = id;
         this.processNumber = processNumber;
         this.pbDocProcess = pbDocProcess;
         this.sector = sector;
         this.topic = topic;
+        this.itens = itens;
     }
 
     public Long getId() {
@@ -69,6 +72,14 @@ public class Map {
         this.topic = topic;
     }
 
+    public List<MapItem> getItens() {
+        return itens;
+    }
+
+    public void setItens(List<MapItem> itens) {
+        this.itens = itens;
+    }
+
     @Override
     public String toString() {
         return "Map{" +
@@ -77,6 +88,7 @@ public class Map {
                 ", pbDocProcess='" + pbDocProcess + '\'' +
                 ", sector='" + sector + '\'' +
                 ", topic='" + topic + '\'' +
+                ", itens=" + itens +
                 '}';
     }
 }
