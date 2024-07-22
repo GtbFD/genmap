@@ -18,6 +18,8 @@ public class Item {
     private float precoBps;
     private int code;
     private String unit;
+    @Column(columnDefinition = "boolean default false")
+    private boolean isDeleted;
 
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
     private List<MapItem> maps;
@@ -25,7 +27,7 @@ public class Item {
     public Item() {
     }
 
-    public Item(Long id, String description, float painelPreco, float precoReferencia, float precoBps, int code, String unit, List<MapItem> maps) {
+    public Item(Long id, String description, float painelPreco, float precoReferencia, float precoBps, int code, String unit, boolean isDeleted, List<MapItem> maps) {
         this.id = id;
         this.description = description;
         this.painelPreco = painelPreco;
@@ -33,6 +35,7 @@ public class Item {
         this.precoBps = precoBps;
         this.code = code;
         this.unit = unit;
+        this.isDeleted = isDeleted;
         this.maps = maps;
     }
 
@@ -98,6 +101,14 @@ public class Item {
 
     public void setMaps(List<MapItem> maps) {
         this.maps = maps;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
     }
 
     @Override
