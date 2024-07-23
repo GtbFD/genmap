@@ -17,18 +17,22 @@ public class Map {
     private String sector;
     private String topic;
 
+    @Column(columnDefinition = "boolean default false")
+    private boolean isDeleted;
+
     @OneToMany(mappedBy = "map", cascade = CascadeType.ALL)
     private List<MapItem> itens;
 
     public Map() {
     }
 
-    public Map(Long id, String processNumber, String pbDocProcess, String sector, String topic, List<MapItem> itens) {
+    public Map(Long id, String processNumber, String pbDocProcess, String sector, String topic, boolean isDeleted, List<MapItem> itens) {
         this.id = id;
         this.processNumber = processNumber;
         this.pbDocProcess = pbDocProcess;
         this.sector = sector;
         this.topic = topic;
+        this.isDeleted = isDeleted;
         this.itens = itens;
     }
 
@@ -78,6 +82,14 @@ public class Map {
 
     public void setItens(List<MapItem> itens) {
         this.itens = itens;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
     }
 
     @Override
