@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Objects;
 
 @RestController
@@ -45,6 +46,13 @@ public class SupplierController {
         }
         LOGGER.info("[DEBUG]: Message = {}, Class = {}", "It wasn't possible to found a Supplier", className);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    }
+
+    @GetMapping("/search/name/{nome}")
+    public ResponseEntity<?> findByNome(@PathVariable String nome){
+        List<CompanyVO> suppliers = supplierService.findByNome(nome);
+
+        return ResponseEntity.status(HttpStatus.OK).body(suppliers);
     }
 
     @PatchMapping("/{cnpj}")

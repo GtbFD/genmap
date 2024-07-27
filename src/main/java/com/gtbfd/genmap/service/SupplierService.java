@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -78,5 +80,18 @@ public class SupplierService {
         }
         LOGGER.info("[DEBUG]: Message = {}, Class = {}", "It wasn't possible to find a supplier", className);
         return null;
+    }
+
+    public List<CompanyVO> findByNome(String nome){
+        List<Supplier> companiesFound = supplierRepository.findByNomeContainingIgnoreCase(nome);
+
+        if (companiesFound.isEmpty()){
+            return null;
+        }
+        List<CompanyVO> companies = new ArrayList<>();
+        companiesFound.stream().forEach(supplier -> {
+            companies.add(supplierMapper.toVO(supplier));
+        });
+        return companies;
     }
 }
