@@ -17,16 +17,17 @@ public class MapItem {
     @ManyToOne
     private Supplier supplier;
     private float quantity;
-
+    private float price;
     public MapItem() {
     }
 
-    public MapItem(Long id, Map map, Item item, Supplier supplier, float quantity) {
+    public MapItem(Long id, Map map, Item item, Supplier supplier, float quantity, float price) {
         this.id = id;
         this.map = map;
         this.item = item;
         this.supplier = supplier;
         this.quantity = quantity;
+        this.price = price;
     }
 
     public Long getId() {
@@ -69,6 +70,14 @@ public class MapItem {
         this.quantity = quantity;
     }
 
+    public float getPrice() {
+        return price;
+    }
+
+    public void setPrice(float price) {
+        this.price = price;
+    }
+
     @Override
     public String toString() {
         return "MapItem{" +
@@ -77,6 +86,7 @@ public class MapItem {
                 ", item=" + item +
                 ", supplier=" + supplier +
                 ", quantity=" + quantity +
+                ", price=" + price +
                 '}';
     }
 }

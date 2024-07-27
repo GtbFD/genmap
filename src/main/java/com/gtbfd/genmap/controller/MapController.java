@@ -1,6 +1,9 @@
 package com.gtbfd.genmap.controller;
 
+import com.gtbfd.genmap.domain.Item;
+import com.gtbfd.genmap.domain.Map;
 import com.gtbfd.genmap.dto.MapDTO;
+import com.gtbfd.genmap.dto.MapItemDTO;
 import com.gtbfd.genmap.service.MapService;
 import com.gtbfd.genmap.vo.MapVO;
 import org.slf4j.Logger;
@@ -10,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @RestController
@@ -33,6 +38,21 @@ public class MapController {
             return ResponseEntity.status(HttpStatus.OK).body(mapCreated);
         }
         LOGGER.info("[DEBUG]: Message = {}, Class = {}", "It wasn't possible to create a new Map", className);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    }
+
+    @PostMapping("/add/item")
+    public ResponseEntity<?> addItem(@RequestBody MapItemDTO mapItemDTO){
+        LOGGER.info("[DEBUG]: Message = {}, Class = {}", "Request to add Item in Map", className);
+
+        Map map = mapService.addItemInMap(mapItemDTO.mapId(), mapItemDTO.supplierCnpj(),
+                mapItemDTO.items(), mapItemDTO.prices(), mapItemDTO.quantity());
+
+        if (Objects.nonNull(map)) {
+            LOGGER.info("[DEBUG]: Message = {}, Items = {}, Class = {}", "Items added in Map", map, className);
+            return ResponseEntity.status(HttpStatus.OK).body("");
+        }
+        LOGGER.info("[DEBUG]: Message = {}, Class = {}", "It wasn't possible to add Items in Map", className);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 

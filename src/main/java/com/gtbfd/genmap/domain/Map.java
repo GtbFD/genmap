@@ -100,7 +100,6 @@ public class Map {
                 ", pbDocProcess='" + pbDocProcess + '\'' +
                 ", sector='" + sector + '\'' +
                 ", topic='" + topic + '\'' +
-                ", itens=" + itens +
                 '}';
     }
 }
