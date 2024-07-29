@@ -83,15 +83,18 @@ public class SupplierService {
     }
 
     public List<CompanyVO> findByNome(String nome){
+        LOGGER.info("[DEBUG]: Message = {}, Class = {}", "Request to findsupplier by name", className);
         List<Supplier> companiesFound = supplierRepository.findByNomeContainingIgnoreCase(nome);
 
         if (companiesFound.isEmpty()){
+            LOGGER.info("[DEBUG]: Message = {}, Class = {}", "It wasn't possible to find supplier by name", className);
             return null;
         }
         List<CompanyVO> companies = new ArrayList<>();
-        companiesFound.stream().forEach(supplier -> {
+        companiesFound.forEach(supplier -> {
             companies.add(supplierMapper.toVO(supplier));
         });
+        LOGGER.info("[DEBUG]: Message = {}, Suppliers = {}, Class = {}", "Suppliers found by name", companies, className);
         return companies;
     }
 }

@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -90,5 +92,21 @@ public class UnitService {
             }
         }
         return false;
+    }
+
+    public List<CompanyVO> findByNome(String nome){
+        LOGGER.info("[DEBUG]: Message = {}, Class = {}", "Request to find unit by name", className);
+        List<Unit> companiesFound = unitRepository.findByNomeContainingIgnoreCase(nome);
+
+        if (companiesFound.isEmpty()){
+            LOGGER.info("[DEBUG]: Message = {}, Class = {}", "It wasn't possible to find unit by name", className);
+            return null;
+        }
+        List<CompanyVO> companies = new ArrayList<>();
+        companiesFound.forEach(supplier -> {
+            companies.add(unitMapper.toVO(supplier));
+        });
+        LOGGER.info("[DEBUG]: Message = {}, Units = {}, Class = {}", "Units found by name", companies, className);
+        return companies;
     }
 }

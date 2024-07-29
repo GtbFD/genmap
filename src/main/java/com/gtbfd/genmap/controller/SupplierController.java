@@ -50,8 +50,14 @@ public class SupplierController {
 
     @GetMapping("/search/name/{nome}")
     public ResponseEntity<?> findByNome(@PathVariable String nome){
+        LOGGER.info("[DEBUG]: Message = {}, Class = {}", "Request to find supplier by name", className);
         List<CompanyVO> suppliers = supplierService.findByNome(nome);
 
+        if (suppliers.isEmpty()){
+            LOGGER.info("[DEBUG]: Message = {}, Class = {}", "It wasn't possible to find suppliers by name", className);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+        LOGGER.info("[DEBUG]: Message = {}, Suppliers = {}, Class = {}", "Suppliers found by name", suppliers, className);
         return ResponseEntity.status(HttpStatus.OK).body(suppliers);
     }
 

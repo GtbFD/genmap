@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Objects;
 
 @RestController
@@ -34,6 +35,19 @@ public class UnitController {
         }
         LOGGER.info("[DEBUG]: Message = {}, Class = {}", "It wasn't possible to create a  new user", className);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("");
+    }
+
+    @GetMapping("/search/name/{nome}")
+    public ResponseEntity<?> findByNome(@PathVariable String nome){
+        LOGGER.info("[DEBUG]: Message = {}, Class = {}", "Request to find unit by name", className);
+        List<CompanyVO> suppliers = unitService.findByNome(nome);
+
+        if (suppliers.isEmpty()){
+            LOGGER.info("[DEBUG]: Message = {}, Class = {}", "It wasn't possible to find unit by name", className);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+        LOGGER.info("[DEBUG]: Message = {}, Units = {}, Class = {}", "Units found by name", suppliers, className);
+        return ResponseEntity.status(HttpStatus.OK).body(suppliers);
     }
 
     @GetMapping("/{cnpj}")
